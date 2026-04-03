@@ -1,26 +1,42 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDomainDto } from './dto/create-domain.dto';
 import { UpdateDomainDto } from './dto/update-domain.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class DomainsService {
+  constructor(private readonly prisma: PrismaService) {}
+
   create(createDomainDto: CreateDomainDto) {
-    return 'This action adds a new domain';
+    return this.prisma.domain.create({
+      data: {
+        name: createDomainDto.name!,
+      },
+    });
   }
 
   findAll() {
-    return `This action returns all domains`;
+    return this.prisma.domain.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} domain`;
+  findOne(id: string) {
+    return this.prisma.domain.findUnique({
+      where: { id },
+    });
   }
 
-  update(id: number, updateDomainDto: UpdateDomainDto) {
-    return `This action updates a #${id} domain`;
+  update(id: string, updateDomainDto: UpdateDomainDto) {
+    return this.prisma.domain.update({
+      where: { id },
+      data: {
+        name: updateDomainDto.name,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} domain`;
+  remove(id: string) {
+    return this.prisma.domain.delete({
+      where: { id },
+    });
   }
 }
